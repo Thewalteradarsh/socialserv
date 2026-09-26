@@ -32,10 +32,16 @@ export async function onRequest(context) {
   url.searchParams.delete('endpoint');
 
   const API_QUEUE = [
+    // Primary Instances
     'https://saavn.dev/api',
-    'https://jiosaavn-api-privatecvc2.vercel.app',
     'https://saavn.me',
-    'https://jiosaavn-api-v3.vercel.app'
+    'https://saavn.sumit.co',
+    
+    // Vercel Serverless Mirrors
+    'https://jiosaavn-api-privatecvc2.vercel.app',
+    'https://jiosaavn-api-v3.vercel.app',
+    'https://nepotuneapi.vercel.app/api',
+    'https://jiosaavn-api-lemon.vercel.app'
   ];
 
   let lastError = null;

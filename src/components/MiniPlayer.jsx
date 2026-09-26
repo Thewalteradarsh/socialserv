@@ -54,7 +54,7 @@ export default function MiniPlayer() {
 
           {/* Controls */}
           <div className="flex items-center gap-4 md:gap-6 justify-center flex-shrink-0" onClick={e => e.stopPropagation()}>
-            <button onClick={() => useAppStore.getState().playPrevious()} className="text-grayText hover:text-white transition-colors">
+            <button disabled={status === 'LOADING'} onClick={() => useAppStore.getState().playPrevious()} className="text-grayText hover:text-white transition-colors disabled:opacity-50">
               <SkipBack size={20} className="fill-current" />
             </button>
             
@@ -62,7 +62,7 @@ export default function MiniPlayer() {
               {isPlaying ? <Pause size={20} className="fill-current" /> : <Play size={20} className="fill-current ml-1" />}
             </button>
             
-            <button onClick={() => useAppStore.getState().playNext()} className="text-grayText hover:text-white transition-colors">
+            <button disabled={status === 'LOADING'} onClick={() => useAppStore.getState().playNext()} className="text-grayText hover:text-white transition-colors disabled:opacity-50">
               <SkipForward size={20} className="fill-current" />
             </button>
           </div>

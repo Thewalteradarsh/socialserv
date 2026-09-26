@@ -172,6 +172,10 @@ class AudioEngineSingleton {
     this.audio.src = streamUrl;
     
     this.audio.play().catch(err => {
+      if (err.name === 'AbortError' || err.message.includes('interrupted')) {
+        console.warn('[AudioEngine] Playback interrupted by rapid skipping. Ignoring.');
+        return;
+      }
       console.error("[AudioEngine] Autoplay prevented or failed:", err);
       useAppStore.getState().setStatus('ERROR');
       this._handleFatalError(err);

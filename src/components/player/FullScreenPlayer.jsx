@@ -104,7 +104,7 @@ export default function FullScreenPlayer({ isOpen, onClose }) {
 
         {/* Playback Controls */}
         <div className="flex items-center justify-center gap-8 mb-4 pb-8">
-          <button onClick={() => useAppStore.getState().playPrevious()} className="text-white/80 hover:text-white transition-colors p-2">
+          <button disabled={status === 'LOADING'} onClick={() => useAppStore.getState().playPrevious()} className="text-white/80 hover:text-white transition-colors p-2 disabled:opacity-50">
             <SkipBack size={36} className="fill-current" />
           </button>
           
@@ -115,7 +115,7 @@ export default function FullScreenPlayer({ isOpen, onClose }) {
             {isPlaying ? <Pause size={36} className="fill-current" /> : <Play size={36} className="fill-current ml-2" />}
           </button>
           
-          <button onClick={() => useAppStore.getState().playNext()} className="text-white/80 hover:text-white transition-colors p-2">
+          <button disabled={status === 'LOADING'} onClick={() => useAppStore.getState().playNext()} className="text-white/80 hover:text-white transition-colors p-2 disabled:opacity-50">
             <SkipForward size={36} className="fill-current" />
           </button>
         </div>

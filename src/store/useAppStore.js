@@ -31,6 +31,8 @@ const createPreferencesSlice = (set) => ({
 });
 
 // 2. Playback Slice (Strict Finite State Machine)
+let lastSkipTime = 0;
+
 const createPlaybackSlice = (set, get) => ({
   playbackState: {
     status: 'IDLE', // 'IDLE' | 'LOADING' | 'PLAYING' | 'PAUSED' | 'ERROR'
@@ -94,6 +96,10 @@ const createPlaybackSlice = (set, get) => ({
    * Advances the playback state machine to the next logical track.
    */
   playNext: () => {
+    const now = Date.now();
+    if (now - lastSkipTime < 400) return;
+    lastSkipTime = now;
+
     const state = get().playbackState;
     const { currentTrack, queue, repeatMode, history } = state;
 
@@ -138,6 +144,10 @@ const createPlaybackSlice = (set, get) => ({
    * Rewinds the current track, or pops the history stack to go backwards.
    */
   playPrevious: () => {
+    const now = Date.now();
+    if (now - lastSkipTime < 400) return;
+    lastSkipTime = now;
+
     const state = get().playbackState;
     const { history, queue } = state;
 
