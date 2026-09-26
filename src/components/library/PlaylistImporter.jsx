@@ -14,13 +14,13 @@ export default function PlaylistImporter({ isOpen, onClose }) {
   const [importedPlaylist, setImportedPlaylist] = useState(null);
 
   const handleUrlFetch = async (url) => {
-    if (!url.includes('spotify.com/') && !url.includes('spotify.link/') && !url.includes('spoti.fi/') && !url.includes('jiosaavn.com/')) return;
+    if (!/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/|jiosaavn\.com\/)/i.test(url)) return;
     
     setIsFetchingUrl(true);
     try {
       let tracksString = '';
 
-      if (url.includes('spotify.com/') || url.includes('spotify.link/') || url.includes('spoti.fi/')) {
+      if (/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/)/i.test(url)) {
         const apiUrl = `/api/fetchPlaylist?playlistUrl=${encodeURIComponent(url)}`;
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`Spotify fetch failed: ${response.status}`);
@@ -165,7 +165,7 @@ export default function PlaylistImporter({ isOpen, onClose }) {
                 value={playlistUrl}
                 onChange={(e) => {
                   setPlaylistUrl(e.target.value);
-                  if (e.target.value.includes('spotify.com/') || e.target.value.includes('spotify.link/') || e.target.value.includes('spoti.fi/') || e.target.value.includes('jiosaavn.com/')) {
+                  if (/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/|jiosaavn\.com\/)/i.test(e.target.value)) {
                     handleUrlFetch(e.target.value);
                   }
                 }}

@@ -13,7 +13,7 @@ export async function onRequest(context) {
 
   const playlistUrl = url.searchParams.get('playlistUrl');
 
-  if (!playlistUrl || (!playlistUrl.includes('spotify.com/') && !playlistUrl.includes('spotify.link/') && !playlistUrl.includes('spoti.fi/'))) {
+  if (!playlistUrl || !/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/)/i.test(playlistUrl)) {
     return Response.json({ error: 'Invalid or missing Spotify URL' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 
@@ -23,19 +23,35 @@ export async function onRequest(context) {
     // Resolve short links first
     if (finalUrl.includes('spotify.link/') || finalUrl.includes('spoti.fi/') || finalUrl.includes('open.spotify.com/s/')) {
       const redirectResponse = await fetch(finalUrl, { 
-        redirect: 'follow',
+        redirect: 'manual',
         headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
       });
-      finalUrl = redirectResponse.url;
+      
+      const location = redirectResponse.headers.get('location');
+      if (!location) {
+        return Response.json({ error: 'Failed to resolve short link: no location header found' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
+      }
+      finalUrl = location;
     }
 
     let embedUrl = finalUrl;
-    if (finalUrl.includes('open.spotify.com/playlist/')) {
-        embedUrl = finalUrl.replace('open.spotify.com/playlist/', 'open.spotify.com/embed/playlist/');
-    } else if (finalUrl.includes('open.spotify.com/album/')) {
-        embedUrl = finalUrl.replace('open.spotify.com/album/', 'open.spotify.com/embed/album/');
+    if (finalUrl.includes('/playlist/')) {
+        const match = finalUrl.match(/\/playlist\/([a-zA-Z0-9]+)/);
+        if (match) {
+            embedUrl = `https://open.spotify.com/embed/playlist/${match[1]}`;
+        } else {
+            return Response.json({ error: 'Invalid Spotify playlist URL' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
+        }
+    } else if (finalUrl.includes('/album/')) {
+        const match = finalUrl.match(/\/album\/([a-zA-Z0-9]+)/);
+        if (match) {
+            embedUrl = `https://open.spotify.com/embed/album/${match[1]}`;
+        } else {
+            return Response.json({ error: 'Invalid Spotify album URL' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
+        }
+    } else {
+        return Response.json({ error: 'Could not extract playlist or album ID from URL' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
-    embedUrl = embedUrl.split('?')[0];
 
     console.log("Server API fetching:", embedUrl);
     const response = await fetch(embedUrl, {
