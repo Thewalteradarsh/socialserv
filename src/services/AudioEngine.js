@@ -134,7 +134,7 @@ class AudioEngineSingleton {
       if (audioBlob) {
         streamUrl = URL.createObjectURL(audioBlob);
         this.currentObjectUrl = streamUrl;
-        console.log(`[AudioEngine] Playing ${track.id} from offline storage`);
+
       }
     } catch (e) {
       console.error("[AudioEngine] Error checking offline storage:", e);

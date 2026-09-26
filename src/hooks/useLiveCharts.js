@@ -17,7 +17,7 @@ export function useLiveCharts(spotifyId) {
             // Securely proxy the Spotify request through our local API 
             // which bypasses the need for client-side Spotify access tokens.
             const apiUrl = `/api/fetchPlaylist?playlistUrl=https://open.spotify.com/playlist/${id}&format=json`;
-            console.log("Fetching live playlist from local API:", apiUrl);
+
 
             const response = await fetch(apiUrl);
 

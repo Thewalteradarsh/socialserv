@@ -34,7 +34,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         // Exclude audio caching from workbox, we handle that in idb
         runtimeCaching: [],
-        maximumFileSizeToCacheInBytes: 10485760 // 10 MiB
+        maximumFileSizeToCacheInBytes: 15728640 // 15 MiB
       }
     })
   ],

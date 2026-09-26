@@ -58,7 +58,7 @@ class DownloadManagerSingleton {
     } catch (e) {
       console.error(`[DownloadManager] Error downloading ${track.id}:`, e);
       if (retryCount < 2) {
-        console.log(`[DownloadManager] Retrying download for ${track.id} (Attempt ${retryCount + 1})`);
+
         this.activeDownloads.delete(track.id);
         useAppStore.getState().removeDownloadQueue(track.id);
         return this.downloadTrack(track, retryCount + 1);

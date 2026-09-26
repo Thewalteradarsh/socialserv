@@ -5,10 +5,6 @@ import TrackCardSkeleton from './skeletons/TrackCardSkeleton';
 
 export default function RegionalMusicView({ currentCategory }) {
   const { songs, playlistTitle, isLoading, error, refreshData } = useLiveCharts(currentCategory?.spotifyId);
-  
-  // Debug log requested by user
-  console.log("RegionalMusicView fetched songs:", songs);
-
   const handlePlayContext = (track) => {
     // Map Spotify structure to our internal AudioEngine format
     const playTrack = {

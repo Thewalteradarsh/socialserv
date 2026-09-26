@@ -3,7 +3,7 @@ import { api } from '../../utils/apiClient';
 import { useAppStore } from '../../store/useAppStore';
 import PlaylistCover from './PlaylistCover';
 import { Download, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { clearGarbage } from '../../utils/cleanupUtils';
+
 
 export default function PlaylistImporter({ isOpen, onClose }) {
   const [inputText, setInputText] = useState('');
@@ -14,13 +14,13 @@ export default function PlaylistImporter({ isOpen, onClose }) {
   const [importedPlaylist, setImportedPlaylist] = useState(null);
 
   const handleUrlFetch = async (url) => {
-    if (!url.includes('spotify.com/') && !url.includes('jiosaavn.com/')) return;
+    if (!url.includes('spotify.com/') && !url.includes('spotify.link/') && !url.includes('spoti.fi/') && !url.includes('jiosaavn.com/')) return;
     
     setIsFetchingUrl(true);
     try {
       let tracksString = '';
 
-      if (url.includes('spotify.com/')) {
+      if (url.includes('spotify.com/') || url.includes('spotify.link/') || url.includes('spoti.fi/')) {
         const apiUrl = `/api/fetchPlaylist?playlistUrl=${encodeURIComponent(url)}`;
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`Spotify fetch failed: ${response.status}`);
@@ -136,8 +136,7 @@ export default function PlaylistImporter({ isOpen, onClose }) {
        setImportedPlaylist(newPlaylist);
     }
     
-    // Phase 6: Memory Leak Prevention
-    clearGarbage();
+
     setIsImporting(false);
   };
 
@@ -166,7 +165,7 @@ export default function PlaylistImporter({ isOpen, onClose }) {
                 value={playlistUrl}
                 onChange={(e) => {
                   setPlaylistUrl(e.target.value);
-                  if (e.target.value.includes('spotify.com/') || e.target.value.includes('jiosaavn.com/')) {
+                  if (e.target.value.includes('spotify.com/') || e.target.value.includes('spotify.link/') || e.target.value.includes('spoti.fi/') || e.target.value.includes('jiosaavn.com/')) {
                     handleUrlFetch(e.target.value);
                   }
                 }}

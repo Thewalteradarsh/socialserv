@@ -13,16 +13,27 @@ export async function onRequest(context) {
 
   const playlistUrl = url.searchParams.get('playlistUrl');
 
-  if (!playlistUrl || !playlistUrl.includes('spotify.com/')) {
+  if (!playlistUrl || (!playlistUrl.includes('spotify.com/') && !playlistUrl.includes('spotify.link/') && !playlistUrl.includes('spoti.fi/'))) {
     return Response.json({ error: 'Invalid or missing Spotify URL' }, { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 
   try {
-    let embedUrl = playlistUrl;
-    if (playlistUrl.includes('open.spotify.com/playlist/')) {
-        embedUrl = playlistUrl.replace('open.spotify.com/playlist/', 'open.spotify.com/embed/playlist/');
-    } else if (playlistUrl.includes('open.spotify.com/album/')) {
-        embedUrl = playlistUrl.replace('open.spotify.com/album/', 'open.spotify.com/embed/album/');
+    let finalUrl = playlistUrl;
+    
+    // Resolve short links first
+    if (finalUrl.includes('spotify.link/') || finalUrl.includes('spoti.fi/')) {
+      const redirectResponse = await fetch(finalUrl, { 
+        redirect: 'follow',
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+      });
+      finalUrl = redirectResponse.url;
+    }
+
+    let embedUrl = finalUrl;
+    if (finalUrl.includes('open.spotify.com/playlist/')) {
+        embedUrl = finalUrl.replace('open.spotify.com/playlist/', 'open.spotify.com/embed/playlist/');
+    } else if (finalUrl.includes('open.spotify.com/album/')) {
+        embedUrl = finalUrl.replace('open.spotify.com/album/', 'open.spotify.com/embed/album/');
     }
     embedUrl = embedUrl.split('?')[0];
 

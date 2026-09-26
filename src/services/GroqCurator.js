@@ -1,14 +1,10 @@
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
+// API calls proxied through /api/groqCurate to secure GROQ_API_KEY
 
 /**
  * Defensive utility to interface with Groq API for AI Curation.
  * Implements strict JSON parsing and fallback error swallowing to prevent UI crashes.
  */
 export async function fetchDailyMixes(languages, recentHistory) {
-  if (!GROQ_API_KEY) {
-    console.warn("[GroqCurator] Missing VITE_GROQ_API_KEY. Silently skipping AI curation.");
-    return null;
-  }
 
   // Format history for the AI
   const historyStr = recentHistory.map(t => `${t.name || t.title} by ${t.primaryArtists || t.artist}`).join(' | ');
@@ -38,11 +34,10 @@ The JSON array MUST exactly match this schema:
 `;
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/groqCurate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',
