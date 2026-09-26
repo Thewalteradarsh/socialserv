@@ -11,6 +11,17 @@ export async function onRequest(context) {
     });
   }
 
+  const origin = request.headers.get('Origin') || '';
+  const clientHeader = request.headers.get('X-App-Client');
+
+  if (clientHeader !== 'socialserv-client') {
+    return Response.json({ error: "Unauthorized client" }, { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } });
+  }
+
+  if (origin && !origin.includes('localhost') && !origin.includes('127.0.0.1') && !origin.includes('socialserv')) {
+    return Response.json({ error: "Unauthorized origin" }, { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } });
+  }
+
   const playlistUrl = url.searchParams.get('playlistUrl');
 
   if (!playlistUrl || !/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/)/i.test(playlistUrl)) {

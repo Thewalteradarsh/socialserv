@@ -22,7 +22,9 @@ export default function PlaylistImporter({ isOpen, onClose }) {
 
       if (/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/)/i.test(url)) {
         const apiUrl = `/api/fetchPlaylist?playlistUrl=${encodeURIComponent(url)}`;
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+          headers: { 'X-App-Client': 'socialserv-client' }
+        });
         if (!response.ok) throw new Error(`Spotify fetch failed: ${response.status}`);
         const data = await response.json();
         tracksString = data.tracks;

@@ -18,8 +18,9 @@ export function useLiveCharts(spotifyId) {
             // which bypasses the need for client-side Spotify access tokens.
             const apiUrl = `/api/fetchPlaylist?playlistUrl=https://open.spotify.com/playlist/${id}&format=json`;
 
-
-            const response = await fetch(apiUrl);
+            const response = await fetch(apiUrl, {
+                headers: { 'X-App-Client': 'socialserv-client' }
+            });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));

@@ -37,7 +37,8 @@ The JSON array MUST exactly match this schema:
     const res = await fetch('/api/groqCurate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-App-Client': 'socialserv-client'
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',

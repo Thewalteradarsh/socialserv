@@ -14,6 +14,7 @@ class AudioEngineSingleton {
     this.historyLogged = false;
     this.animationFrameId = null;
     this.lastUpdateTime = 0;
+    this.consecutiveFailures = 0;
 
     this._bindEvents();
     this._subscribeToStore();
@@ -22,6 +23,7 @@ class AudioEngineSingleton {
 
   _bindEvents() {
     this.audio.addEventListener('playing', () => {
+      this.consecutiveFailures = 0;
       useAppStore.getState().setStatus('PLAYING');
       if (!this.historyLogged) {
         this._startHistoryTimer();
@@ -80,8 +82,14 @@ class AudioEngineSingleton {
   }
 
   _handleFatalError(e) {
+      this.consecutiveFailures++;
       useAppStore.getState().setStatus('ERROR');
       this._clearHistoryTimer();
+      
+      if (this.consecutiveFailures >= 3) {
+        console.error("[AudioEngine] Playback halted due to 3 consecutive failures.");
+        return;
+      }
       
       // Auto-advance out of the dead-end after 2 seconds
       setTimeout(() => {
@@ -165,7 +173,8 @@ class AudioEngineSingleton {
     
     this.audio.play().catch(err => {
       console.error("[AudioEngine] Autoplay prevented or failed:", err);
-      // Wait for user interaction. State naturally sits at 'IDLE' or 'LOADING'.
+      useAppStore.getState().setStatus('ERROR');
+      this._handleFatalError(err);
     });
 
     // Sync OS Media Session Metadata
