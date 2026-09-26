@@ -19,7 +19,7 @@ export function useLiveCharts(spotifyId) {
             const apiUrl = `/api/fetchPlaylist?playlistUrl=https://open.spotify.com/playlist/${id}&format=json`;
 
             const response = await fetch(apiUrl, {
-                headers: { 'X-App-Client': 'socialserv-client' }
+                headers: { 'X-App-Client': 'HearApp' }
             });
 
             if (!response.ok) {

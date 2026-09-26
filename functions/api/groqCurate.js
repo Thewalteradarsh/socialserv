@@ -21,9 +21,9 @@ export async function onRequest(context) {
   }
 
   const origin = request.headers.get('Origin') || '';
-  const clientHeader = request.headers.get('X-App-Client');
+  const clientHeader = request.headers.get('X-App-Client') || request.headers.get('x-app-client');
 
-  if (clientHeader !== 'socialserv-client') {
+  if (clientHeader !== 'HearApp') {
     return new Response(JSON.stringify({ error: "Unauthorized client" }), { status: 403 });
   }
 

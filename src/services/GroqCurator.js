@@ -38,7 +38,7 @@ The JSON array MUST exactly match this schema:
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-App-Client': 'socialserv-client'
+        'X-App-Client': 'HearApp'
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',

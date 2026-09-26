@@ -23,7 +23,7 @@ export default function PlaylistImporter({ isOpen, onClose }) {
       if (/(open\.spotify\.com\/(playlist|s|album)\/|spotify\.link\/|spoti\.fi\/)/i.test(url)) {
         const apiUrl = `/api/fetchPlaylist?playlistUrl=${encodeURIComponent(url)}`;
         const response = await fetch(apiUrl, {
-          headers: { 'X-App-Client': 'socialserv-client' }
+          headers: { 'X-App-Client': 'HearApp' }
         });
         if (!response.ok) throw new Error(`Spotify fetch failed: ${response.status}`);
         const data = await response.json();
@@ -31,7 +31,7 @@ export default function PlaylistImporter({ isOpen, onClose }) {
       } else if (url.includes('jiosaavn.com/')) {
         // Use our new resilient JioSaavn proxy queue
         const apiUrl = `/api/jiosaavn?endpoint=playlists&link=${encodeURIComponent(url)}`;
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, { headers: { 'x-app-client': 'HearApp' } });
         if (!response.ok) throw new Error(`JioSaavn fetch failed: ${response.status}`);
         const data = await response.json();
         const playlistData = data?.data || data;
@@ -77,7 +77,9 @@ export default function PlaylistImporter({ isOpen, onClose }) {
         }
 
         // Fetch top 10 results from JioSaavn API Queue for better English song coverage
-        const res = await fetch(`/api/jiosaavn?endpoint=search/songs&query=${encodeURIComponent(query)}&limit=10`);
+        const res = await fetch(`/api/jiosaavn?endpoint=search/songs&query=${encodeURIComponent(query)}&limit=10`, {
+          headers: { 'x-app-client': 'HearApp' }
+        });
         const data = await res.json();
         
         const results = data?.data?.results || data?.results || data?.data || [];

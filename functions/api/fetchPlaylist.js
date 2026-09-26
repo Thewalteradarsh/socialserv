@@ -12,9 +12,9 @@ export async function onRequest(context) {
   }
 
   const origin = request.headers.get('Origin') || '';
-  const clientHeader = request.headers.get('X-App-Client');
+  const clientHeader = request.headers.get('X-App-Client') || request.headers.get('x-app-client');
 
-  if (clientHeader !== 'socialserv-client') {
+  if (clientHeader !== 'HearApp') {
     return Response.json({ error: "Unauthorized client" }, { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 

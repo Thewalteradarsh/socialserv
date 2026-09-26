@@ -7,8 +7,20 @@ export async function onRequest(context) {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'x-app-client',
       }
     });
+  }
+
+  const origin = request.headers.get('Origin') || '';
+  const clientHeader = request.headers.get('x-app-client') || request.headers.get('X-App-Client');
+
+  if (clientHeader !== 'HearApp') {
+    return Response.json({ error: "Unauthorized client" }, { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } });
+  }
+
+  if (origin && !origin.includes('localhost') && !origin.includes('127.0.0.1') && !origin.includes('socialserv')) {
+    return Response.json({ error: "Unauthorized origin" }, { status: 403, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 
   const endpoint = url.searchParams.get('endpoint');
